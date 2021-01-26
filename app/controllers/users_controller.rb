@@ -13,12 +13,24 @@ class UsersController < ApplicationController
     render json: user
   end
 
+  def login
+    # byebug
+    user = User.find_by(username: params[:username])
+    if user && user.authenticate(params[:password])
+      token = encode_token({user_id: user.id})
+      render json: {user: UserSerializer.new(user), token: token}
+    else
+      render json: {error: "Incorrect Name or Password"}
+    end
+  end
+
   # POST /users
   def create
     user = User.new(user_params)
 
-    if user.save
-      render json: user, status: :created, location: user
+    if user.save!
+      token = encode_token({user_id: user.id})
+      render json: {user:user, status: :created, location: user, token: token}
     else
       render json: user.errors, status: :unprocessable_entity
     end
@@ -26,26 +38,35 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if user.update(user_params)
-      render json: user
+    # byebug
+    # @user.update(user_params)
+    if @user.update!(user_params)
+      render json: @user
     else
-      render json: user.errors, status: :unprocessable_entity
+      render json: @user.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /users/1
   def destroy
-    user.destroy
+    if @user.destroy!
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+  def getuser
+    render json: {user: UserSerializer.new(current_user)}
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      user = User.find(params[:id])
+      @user = User.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:username, :password, :password_confirmation, :first_name, :last_name, :email)
+      params.require(:user).permit(:username, :password, :password_confirmation, :first_name, :last_name, :email, :img_url)
     end
 end
