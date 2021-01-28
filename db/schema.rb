@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_14_180617) do
+ActiveRecord::Schema.define(version: 2021_01_14_180618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,9 +37,11 @@ ActiveRecord::Schema.define(version: 2021_01_14_180617) do
   end
 
   create_table "reviews", force: :cascade do |t|
-    t.string "notes"
+    t.string "notes", default: ""
+    t.bigint "user_show_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_show_id"], name: "index_reviews_on_user_show_id"
   end
 
   create_table "tv_shows", force: :cascade do |t|
@@ -57,13 +59,11 @@ ActiveRecord::Schema.define(version: 2021_01_14_180617) do
     t.boolean "currently_watching"
     t.integer "current_episode"
     t.bigint "user_id", null: false
-    t.bigint "review_id", null: false
     t.string "media_type", null: false
     t.bigint "media_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["media_type", "media_id"], name: "index_user_shows_on_media_type_and_media_id"
-    t.index ["review_id"], name: "index_user_shows_on_review_id"
     t.index ["user_id"], name: "index_user_shows_on_user_id"
   end
 
@@ -79,6 +79,6 @@ ActiveRecord::Schema.define(version: 2021_01_14_180617) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "user_shows", "reviews"
+  add_foreign_key "reviews", "user_shows"
   add_foreign_key "user_shows", "users"
 end

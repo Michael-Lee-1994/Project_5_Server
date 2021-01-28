@@ -10,7 +10,7 @@ class UserShowsController < ApplicationController
 
   # GET /user_shows/1
   def show
-    render json: user_show
+    render json: @user_show
   end
 
   # POST /user_shows
@@ -41,11 +41,11 @@ class UserShowsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_show
-      user_show = UserShow.find(params[:id])
+      @user_show = UserShow.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def user_show_params
-      params.require(:user_show).permit(:favorite, :currently_watching, :current_episode, :user_id, :review_id, :media_id, :media_type)
+      params.require(:user_show).permit(:favorite, :currently_watching, :current_episode, :user_id, :media_id, :media_type)
     end
 end

@@ -1,5 +1,7 @@
 class UserShow < ApplicationRecord
   belongs_to :user
-  belongs_to :review
+  has_many :reviews
   belongs_to :media, polymorphic: true
+
+  validates :media_id, uniqueness: {scope: :user_id}
 end
