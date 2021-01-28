@@ -26,10 +26,10 @@ class UserShowsController < ApplicationController
 
   # PATCH/PUT /user_shows/1
   def update
-    if user_show.update(user_show_params)
-      render json: user_show
+    if @user_show.update(user_show_params)
+      render json: @user_show
     else
-      render json: user_show.errors, status: :unprocessable_entity
+      render json: @user_show.errors, status: :unprocessable_entity
     end
   end
 
