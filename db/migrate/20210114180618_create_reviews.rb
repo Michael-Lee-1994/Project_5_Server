@@ -7,4 +7,3 @@ class CreateReviews < ActiveRecord::Migration[6.0]
     end
   end
 end
-# default: ""
